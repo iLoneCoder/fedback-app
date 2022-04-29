@@ -1,12 +1,12 @@
 import FeedbackItem from "./FeedbackItem";
 import PropType  from "prop-types";
 
-function FeedbackList({ feedbackData }) {
+function FeedbackList({ feedbackData, handleDelete }) {
     // console.log(feedbackData);
     return (
         <ul>
             {feedbackData.map((el) => {
-                return <FeedbackItem key={el.id} rating={el.rating} text={el.text} />
+                return <FeedbackItem key={el.id} item={el} handleDelete={(id) => {handleDelete(id)}}/>
             })}
         </ul>
     )

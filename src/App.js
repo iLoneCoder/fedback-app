@@ -5,11 +5,15 @@ import FeedbackData from "./data/feedbackData";
 
 function App() {
     const [feedbackData, setFeedbackData] = useState(FeedbackData);
+    const handleDelete = (id) => {
+       const newFeedbackData = feedbackData.filter((el) => el.id !== id);
+        setFeedbackData(newFeedbackData);
+    }
     return (
         <>
             <Header />
             <div className="container">
-                <FeedbackList feedbackData={feedbackData}/> 
+                <FeedbackList feedbackData={feedbackData} handleDelete={(id) => {handleDelete(id)}}/> 
             </div>
         </>
 
