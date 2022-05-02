@@ -1,10 +1,12 @@
+import { useContext } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { useState } from "react";
 import Card from "./shared/Card";
 import Button from "./shared/Button";
 import FeedbackRating from "./FeedbackRating";
+import FeedbackContext from "../context/FeedbackContext";
 
-function FeedbackForm({addFeedback}) {
+function FeedbackForm() {
     const [text, setText] = useState("");
     const [isDisabled, setIsDisabled] = useState(true);
     const [rating, setRating] = useState(10);
@@ -17,7 +19,9 @@ function FeedbackForm({addFeedback}) {
         }
         setText(review);
     }
-   
+
+    const { addFeedback } = useContext(FeedbackContext);
+
     const handleRating = (newRating) => {
         setRating(newRating);
     }
@@ -32,10 +36,10 @@ function FeedbackForm({addFeedback}) {
         addFeedback(newFeedback);
     }
 
-   return <Card>
+    return <Card>
         <form onSubmit={handleFeedback}>
             <h2>How would you rate our service ?</h2>
-            <FeedbackRating handleRating={handleRating}/>
+            <FeedbackRating handleRating={handleRating} />
             <div className="input-group">
                 <input onChange={(e) => { handleText(e) }} type="text" placeholder="write a review" value={text} />
                 <Button type="submit" isDisabled={isDisabled}>

@@ -1,30 +1,40 @@
-import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import FeedbackList from "./components/FeedbackList";
-import FeedbackData from "./data/feedbackData";
 import FeedbackStat from "./components/FeedbackStat";
 import FeedbackForm from "./components/FeedbackForm";
+import AboutPage from "./pages/AboutPage";
+import MoveToAbout from "./components/MoveToAbout";
+import { FeedbackProvider } from "./context/FeedbackContext";
 
 function App() {
-    const [feedbackData, setFeedbackData] = useState(FeedbackData);
-    const handleDelete = (id) => {
-        const newFeedbackData = feedbackData.filter((el) => el.id !== id);
-        setFeedbackData(newFeedbackData);
-    }
 
-    const handleAdd = (newFeedback) => {
-        setFeedbackData([newFeedback, ...feedbackData]);
-    }
     return (
-        <>
-            <Header />
-            <div className="container">
-                <FeedbackForm addFeedback={handleAdd} />
-                <FeedbackStat feedbackData={feedbackData} />
-                <FeedbackList feedbackData={feedbackData} handleDelete={(id) => { handleDelete(id) }} />
-            </div>
-        </>
+        <FeedbackProvider>
+            <Router>
+                <Routes>
+                    <Route path="/" element={
+                        <>
+                            <Header />
+                            <div className="container">
+                                <FeedbackForm />
+                                <FeedbackStat />
+                                <FeedbackList />
+                            </div>
+                        </>
+                    } />
+                    <Route path="/about" element={
+                        <>
+                            <Header />
+                            <AboutPage />
+                        </>
+                    } />
+                </Routes>
 
+                <MoveToAbout />
+
+            </Router>
+        </FeedbackProvider>
     )
 
 

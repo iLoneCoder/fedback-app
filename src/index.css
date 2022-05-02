@@ -194,3 +194,18 @@ header {
     background-color: darkgray;
     cursor: auto;
 }
+
+.about {
+    position: fixed;
+    left: 95vw;
+    top: 97vh;
+}
+
+.linkstyle {
+    /* text-decoration: none; */
+    color: white;
+}
+
+.linkstyle:hover {
+    color: #ff6a95; 
+}
