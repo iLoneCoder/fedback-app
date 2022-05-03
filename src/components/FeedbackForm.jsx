@@ -1,6 +1,5 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { useState } from "react";
 import Card from "./shared/Card";
 import Button from "./shared/Button";
 import FeedbackRating from "./FeedbackRating";
@@ -20,7 +19,7 @@ function FeedbackForm() {
         setText(review);
     }
 
-    const { addFeedback } = useContext(FeedbackContext);
+    const { addFeedback, editedFeedback } = useContext(FeedbackContext);
 
     const handleRating = (newRating) => {
         setRating(newRating);
@@ -34,14 +33,28 @@ function FeedbackForm() {
         }
         newFeedback.id = uuidv4();
         addFeedback(newFeedback);
+
     }
+
+    useEffect(() => {
+        setText(editedFeedback.text);
+        if (editedFeedback.text) {
+            if (editedFeedback.text.length >= 10) {
+                setIsDisabled(false);
+            } else {
+                setIsDisabled(true);
+            }
+        } else {
+            setIsDisabled(true);
+        }
+    }, [editedFeedback])
 
     return <Card>
         <form onSubmit={handleFeedback}>
             <h2>How would you rate our service ?</h2>
             <FeedbackRating handleRating={handleRating} />
             <div className="input-group">
-                <input onChange={(e) => { handleText(e) }} type="text" placeholder="write a review" value={text} />
+                <input onChange={(e) => { handleText(e) }} type="text" placeholder="write a review" value={text || ""} />
                 <Button type="submit" isDisabled={isDisabled}>
                     Send
                 </Button>
