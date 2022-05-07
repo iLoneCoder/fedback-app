@@ -18,7 +18,7 @@ function FeedbackRating({ handleRating }) {
             setSelected(editedFeedback.rating);
             handleRating(+editedFeedback.rating);
         }
-
+        // console.log(editedFeedback)
     }, [editedFeedback])
 
     return <ul className="rating">

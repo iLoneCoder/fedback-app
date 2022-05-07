@@ -1,11 +1,12 @@
 import { useContext, useState, useEffect } from "react";
-import { v4 as uuidv4 } from 'uuid';
+//import { v4 as uuidv4 } from 'uuid';
 import Card from "./shared/Card";
 import Button from "./shared/Button";
 import FeedbackRating from "./FeedbackRating";
 import FeedbackContext from "../context/FeedbackContext";
 
 function FeedbackForm() {
+    
     const [text, setText] = useState("");
     const [isDisabled, setIsDisabled] = useState(true);
     const [rating, setRating] = useState(10);
@@ -31,12 +32,15 @@ function FeedbackForm() {
             text,
             rating
         }
-        newFeedback.id = uuidv4();
+        // newFeedback._id = uuidv4();
+        setText("");
+        setIsDisabled(true);
         addFeedback(newFeedback);
 
     }
 
     useEffect(() => {
+        // console.log("empty or not", editedFeedback)
         setText(editedFeedback.text);
         if (editedFeedback.text) {
             if (editedFeedback.text.length >= 10) {

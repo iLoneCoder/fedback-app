@@ -1,13 +1,15 @@
-import { useContext } from "react";
+import { useContext} from "react";
 import FeedbackItem from "./FeedbackItem";
 import FeedbackContext from "../context/FeedbackContext";
-
+import Spinner from "./shared/Spinner";
 function FeedbackList() {
-    const { feedbackData } = useContext(FeedbackContext);
-    return (
+    const { feedbackData, isLoading } = useContext(FeedbackContext);
+
+
+    return (isLoading) ? <Spinner /> : (
         <div>
             {feedbackData.map((el) => {
-                return <FeedbackItem key={el.id} item={el} />
+                return <FeedbackItem key={el._id} item={el} />
             })}
         </div>
     )

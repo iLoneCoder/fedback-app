@@ -10,7 +10,7 @@ function FeedbackItem({ item }) {
         <Card>
             <div className="num-display">{item.rating}</div>
             <button onClick={() => {editFeedback(item)}} type="button" className="edit"><FaEdit /></button>
-            <button onClick={() => { handleDelete(item.id) }} type="button"  className="close"><FaTimes /></button>
+            <button onClick={() => { handleDelete(item._id) }} type="button"  className="close"><FaTimes /></button>
             <div className="text-display">{item.text}</div>
         </Card>
     )

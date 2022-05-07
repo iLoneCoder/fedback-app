@@ -1,53 +1,120 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
+const URL = "http://localhost:8080";
 const FeedbackContext = createContext();
 
 export const FeedbackProvider = ({ children }) => {
-    const [feedbackData, setFeedbackData] = useState([
-        {
-            id: 1,
-            text: "Keep it up",
-            rating: 7
-        },
-        {
-            id: 2,
-            text: "Good job, well done!",
-            rating: 9
-        }
-    ]
-    );
+    const [isLoading, setIsLoading] = useState(false);
+    const [feedbackData, setFeedbackData] = useState([]);
 
-    const [editedFeedback, setEditedFeedback] = useState("");
+    useEffect(() => {
+        setIsLoading(true);
+        fetch(URL + "/getFeeds")
+            .then(response => response.json())
+            .then((data) => {
+                // console.log(data);
+                setFeedbackData(data.posts);
+                setIsLoading(false);
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }, [])
 
-    const addFeedback = (newFeedback) => {
-        if (editedFeedback !== undefined) {
-            const index = feedbackData.findIndex((el) => el.id === editedFeedback.id)
-            if (index !== -1) {
-                console.log("index was found");
-                feedbackData[index] = newFeedback;
+    const fetchAddFeedback = (newFeedback) => {
+        // console.log(newFeedback);
+
+        fetch(URL + "/postFeed", {
+            method: "POST",
+            mode: 'cors',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newFeedback)
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                setFeedbackData([data.newFeedback, ...feedbackData]);
+            })
+            .catch()
+    }
+
+    const fetchUpdateFeedback = (updatedFeedback, index) => {
+
+        fetch(URL + "/updateFeed", {
+            method: "PUT",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updatedFeedback)
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                feedbackData[index] = data.updatedFeedback;
                 // console.log( feedbackData[index], editedFeedback);
                 setFeedbackData([...feedbackData]);
                 setEditedFeedback("");
+            })
+            .catch(() => {
+
+            })
+    }
+
+    const fetchDeleteFeedback = (_id) => {
+        fetch(URL + "/deleteFeed", {
+            method: "DELETE",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ _id: _id })
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                const newFeedbackData = feedbackData.filter((el) => {
+                    return el._id.toString() !== data._id.toString()
+                })
+                setFeedbackData(newFeedbackData);
+            })
+            .catch()
+    }
+    const [editedFeedback, setEditedFeedback] = useState("");
+
+    const addFeedback = (newFeedback) => {
+        if (editedFeedback !== "") {
+            const index = feedbackData.findIndex((el) => el._id.toString() === editedFeedback._id.toString())
+            if (index !== -1) {
+                newFeedback._id = feedbackData[index]._id;
+                fetchUpdateFeedback(newFeedback, index);
             } else {
                 console.log("index not found");
-                setFeedbackData([newFeedback, ...feedbackData]);
+                fetchAddFeedback(newFeedback);
             }
         } else {
-            setFeedbackData([newFeedback, ...feedbackData]);
+            // console.log("from here")
+            fetchAddFeedback(newFeedback);
+            setEditedFeedback("");
         }
 
     }
 
     const handleDelete = (id) => {
-        const newFeedbackData = feedbackData.filter((el) => el.id !== id);
-        setFeedbackData(newFeedbackData);
+        fetchDeleteFeedback(id);
     }
 
     const editFeedback = (e) => {
+
         setEditedFeedback(e);
     }
 
-    return <FeedbackContext.Provider value={{ feedbackData, handleDelete, addFeedback, editFeedback, editedFeedback }}>
+    return <FeedbackContext.Provider value={{ feedbackData, editedFeedback, isLoading, handleDelete, addFeedback, editFeedback }}>
         {children}
     </FeedbackContext.Provider>
 }
